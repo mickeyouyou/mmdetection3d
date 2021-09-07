@@ -355,7 +355,9 @@ void dynamic_voxelize_gpu(const at::Tensor& points, at::Tensor& coors,
   const int col_blocks = at::cuda::ATenCeilDiv(num_points, threadsPerBlock);
   dim3 blocks(col_blocks);
   dim3 threads(threadsPerBlock);
+  // TODO(fengzongbao): default or not stream ? performance is different
   cudaStream_t stream = at::cuda::getCurrentCUDAStream();
+  std::cout << ">>>>>>>>>>>>>>>>>>stream:" << stream << std::endl;
 
   AT_DISPATCH_ALL_TYPES(points.scalar_type(), "dynamic_voxelize_kernel", [&] {
     dynamic_voxelize_kernel<scalar_t, int><<<blocks, threads, 0, stream>>>(
